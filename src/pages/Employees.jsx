@@ -1,82 +1,108 @@
 import React, { useState } from 'react';
-import Button from "../components/Button";
-import { buttonClickedExperiemnt } from "../app";
-import PopupWrapper from '../components/PopUp';
 import TextBox from '../components/TextBox';
 import Dropdown from '../components/Dropdown';
 
-const options = [
-    { value: 'red', label: 'Red' },
-    { value: 'green', label: 'Green' },
-    { value: 'blue', label: 'Blue' }
+// ========================== Options for Dropdown ========================== //
+
+export const tempTasks = [
+    { name: "sigma", task: "clean room 1738", startTime: "12:00", endTime: "13:00" },
+    { name: "bro", task: "clean room 69", startTime: "12:00", endTime: "13:00" },
+    { name: "him", task: "clean room 80085", startTime: "12:00", endTime: "13:00" }
 ];
 
+const tempJobs = [
+    { name: "Birmingham Univeristy" },
+    { name: "Aston University" },
+    { name: "Birmingham City University" },
+];
+
+const employeeOptions = tempTasks.map(task => ({
+    value: task.name,
+    label: task.name,
+}));
+
+const jobOptions = tempJobs.map(job => ({
+    value: job.name,
+    label: job.name,
+}));
+
+// ============================= Employees Component ============================= //
+
 const Employees = () => {
+
+    // ========================== State Declarations ========================== //
+
     const [employeeInput, setEmployeeInput] = useState("");
     const [taskName, setTaskName] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
-    const [selected, setSelected] = useState(options[0]);
 
+    // Selection states for dropdowns
+
+    const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
+    const [selectedJob, setSelectedJob] = useState(jobOptions[0]);
+
+    // ========================== Form Submission Handler ========================== //
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Employee:", employeeInput);
-        console.log("Task:", taskName);
+        console.log("-----------------------------------");
+        console.log("Employee Selected:", selectedEmployee.label);
+        console.log("Job Selected:", selectedJob.label);
+        console.log("Task Name:", taskName);
         console.log("Start Time:", startTime);
         console.log("End Time:", endTime);
     };
 
+    // ========================== Render Component ========================== //
+
     return (
-        <>
-            <div>
-                <h1>Employee Name</h1>
-                <Button text="View All Employees" onClick={() => buttonClickedExperiemnt("View All Employees")} />
+        <div>
+            <h1>Employee Page</h1>
+            <form onSubmit={handleSubmit}>
+                {/* ------------------ Employee Selection ------------------ */}
+                <h3>Select Employee</h3>
+                <Dropdown
+                    options={employeeOptions}
+                    selected={selectedEmployee}
+                    onSelectedChange={setSelectedEmployee}
+                />
+                <p>Employee Selected: {selectedEmployee.label}</p>
                 <br />
-                {/* ============================================================== */}
-                <PopupWrapper trigger={<button>Create New Task</button>}>
-                    <h2>New Task</h2>
-                    <form onSubmit={handleSubmit}>
-                        <TextBox
-                            value={employeeInput}
-                            onChange={(e) => setEmployeeInput(e.target.value)}
-                            placeholder="Enter Employee Name"
-                        />
-                        <br />
-                        <Dropdown
-                            options={options}
-                            selected={selected}
-                            onSelectedChange={setSelected}
-                        />
-                        <p>Selected: {selected.label}</p>
-                        <br />
-                        <TextBox
-                            value={taskName}
-                            onChange={(e) => setTaskName(e.target.value)}
-                            placeholder="Enter Task Name"
-                        />
-                        <br />
-                        <br />
-                        <TextBox
-                            value={startTime}
-                            onChange={(e) => setStartTime(e.target.value)}
-                            placeholder="Enter Start Time"
-                        />
-                        <br />
-                        <br />
-                        <TextBox
-                            value={endTime}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            placeholder="Enter End Time"
-                        />
-                        <br />
-                        <br />
-                        <button type="submit">Submit</button>
-                    </form>
-                </PopupWrapper>
-                {/* ============================================================== */}
-            </div>
-        </>
+
+                {/* ------------------ Job Selection ------------------ */}
+                <h3>Select Job</h3>
+                <Dropdown
+                    options={jobOptions}
+                    selected={selectedJob}
+                    onSelectedChange={setSelectedJob}
+                />
+                <p>Job Selected: {selectedJob.label}</p>
+                <br />
+
+                {/* ------------------ Task Details ------------------ */}
+                <h3>Input Fields</h3>
+                <TextBox
+                    value={taskName}
+                    onChange={(e) => setTaskName(e.target.value)}
+                    placeholder="Enter Task Name"
+                />
+                <br /><br />
+                <TextBox
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    placeholder="Enter Start Time"
+                />
+                <br /><br />
+                <TextBox
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    placeholder="Enter End Time"
+                />
+                <br /><br />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     );
 };
 

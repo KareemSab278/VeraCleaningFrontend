@@ -15,6 +15,7 @@ export const Jobs = () => {
   return (
     <div>
       <h1>Jobs</h1>
+      <p>this button is for creating a new job</p>
       <PopupWrapper trigger={<button>Create New Job</button>}>
         <h2>New Job</h2>
         <form onSubmit={handleSubmit}>
@@ -28,9 +29,8 @@ export const Jobs = () => {
         </form>
       </PopupWrapper>
       <br />
+      <p>this button is for viewing all jobs in hostory completed or not</p>
       <Button text="View Jobs" onClick={() => buttonClickedExperiemnt("View Job")} />
-      <br />
-      <Button text="Add Employees" onClick={() => buttonClickedExperiemnt("Add Employees")} />
       <br />
       {/* Add any additional features here */}
     </div>
