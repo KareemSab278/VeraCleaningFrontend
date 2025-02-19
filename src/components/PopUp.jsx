@@ -1,7 +1,7 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import './PopUp.css';
+import '../css/PopUp.css';
 
 export default function PopupWrapper({ trigger, children }) {
   return (
@@ -9,7 +9,6 @@ export default function PopupWrapper({ trigger, children }) {
       {close => (
         <div>
           {children}
-          {/* Optionally, add a close button here */}
           <button onClick={close}>Close</button>
         </div>
       )}

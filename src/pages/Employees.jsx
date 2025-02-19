@@ -1,30 +1,12 @@
 import React, { useState } from 'react';
 import TextBox from '../components/TextBox';
 import Dropdown from '../components/Dropdown';
+import PopupWrapper from '../components/PopUp';
 
-// ========================== Options for Dropdown ========================== //
+// ========================== Data for Dropdown ========================== //
 
-export const tempTasks = [
-    { name: "sigma", task: "clean room 1738", startTime: "12:00", endTime: "13:00" },
-    { name: "bro", task: "clean room 69", startTime: "12:00", endTime: "13:00" },
-    { name: "him", task: "clean room 80085", startTime: "12:00", endTime: "13:00" }
-];
-
-const tempJobs = [
-    { name: "Birmingham Univeristy" },
-    { name: "Aston University" },
-    { name: "Birmingham City University" },
-];
-
-const employeeOptions = tempTasks.map(task => ({
-    value: task.name,
-    label: task.name,
-}));
-
-const jobOptions = tempJobs.map(job => ({
-    value: job.name,
-    label: job.name,
-}));
+import { employeeOptions } from '../tempData';
+import { jobOptions } from '../tempData';
 
 // ============================= Employees Component ============================= //
 
@@ -37,7 +19,7 @@ const Employees = () => {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
 
-    // Selection states for dropdowns
+    /// ========================== Selection states for dropdowns ========================== //
 
     const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
     const [selectedJob, setSelectedJob] = useState(jobOptions[0]);
