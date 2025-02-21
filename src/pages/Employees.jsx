@@ -4,20 +4,21 @@ import Dropdown from '../components/Dropdown';
 import PopupWrapper from '../components/PopUp';
 import { employeeOptions } from '../tempData';
 import { getJobs } from '../app';
+import ImageUploadPopup from '../components/ImageUploadButton';
+
+{/* ======================================================================== */ }
 
 const Employees = () => {
   const [taskName, setTaskName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-
-  // State for jobs fetched from the backend
   const [jobs, setJobs] = useState([]);
-  // Set selected employee from static data
   const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
-  // Set selected job; will initialize once jobs are fetched.
   const [selectedJob, setSelectedJob] = useState(null);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
-  // Fetch created jobs from the backend when the component mounts
+  {/* ======================================================================== */ }
+
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -33,51 +34,62 @@ const Employees = () => {
     fetchJobs();
   }, []);
 
-  // Handle form submission – currently, it just logs to the console.
+  {/* ======================================================================== */ }
+  {/* Handle submit button */ }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("-----------------------------------");
     console.log("Employee Selected:", selectedEmployee.label);
-    console.log("Job Selected:", selectedJob ? selectedJob.jobName : "None");
+    console.log("Job Selected:", selectedJob ? selectedJob.jobName : "None"); //   It only just shows avaerything in the logs - not connected to backend yet
     console.log("Task Name:", taskName);
     console.log("Start Time:", startTime);
     console.log("End Time:", endTime);
   };
 
+  {/* ======================================================================== */ }
+  // Show popup with task details
+
+  const handleEmployeeSelect = (employee) => {
+    setSelectedEmployee(employee);
+    setTaskName(employee.task); // Set task name from selected employee
+    setStartTime(employee.startTime); // Set start time from selected employee
+    setEndTime(employee.endTime); // Set end time from selected employee
+    setPopupVisible(true); // Show the popup
+  };
   return (
     <div>
       <h1>Employee Page</h1>
+
+      {/* ======================================================================== */}
+
+      <h3>Select Job</h3>
+      {jobs.length > 0 ? (
+        <Dropdown
+          options={jobs.map(job => ({
+            value: job._id,
+            label: job.jobName,
+            ...job
+          }))}
+          selected={selectedJob}
+          onSelectedChange={setSelectedJob}
+        />
+      ) : (
+        <p>No jobs available</p>
+      )}
+
+      {selectedJob && <p>Job Selected: {selectedJob.jobName}</p>}
       <form onSubmit={handleSubmit}>
-        {/* ------------------ Employee Selection ------------------ */}
         <h3>Select Employee</h3>
         <Dropdown
           options={employeeOptions}
           selected={selectedEmployee}
-          onSelectedChange={setSelectedEmployee}
+          onSelectedChange={handleEmployeeSelect} // Use the new handler
         />
-        <p>Employee Selected: {selectedEmployee.label}</p>
         <br />
 
-        {/* ------------------ Job Selection using Fetched Jobs ------------------ */}
-        <h3>Select Job</h3>
-        {jobs.length > 0 ? (
-          <Dropdown
-            // Map fetched jobs into dropdown-friendly options (each with value and label)
-            options={jobs.map(job => ({
-              value: job._id,
-              label: job.jobName,
-              ...job
-            }))}
-            selected={selectedJob}
-            onSelectedChange={setSelectedJob}
-          />
-        ) : (
-          <p>No jobs available</p>
-        )}
-        {selectedJob && <p>Job Selected: {selectedJob.jobName}</p>}
-        <br />
+        {/* ======================================================================== */}
 
-        {/* ------------------ Task Details ------------------ */}
         <h3>Task Details</h3>
         <TextBox
           value={taskName}
@@ -96,11 +108,34 @@ const Employees = () => {
           onChange={(e) => setEndTime(e.target.value)}
           placeholder="Enter End Time"
         />
-        <br /><br />
+        <br />
+
+        {/* =================================== */}
+
+        <ImageUploadPopup />
+
+        {/* =================================== */}
+
+        <br />
         <button type="submit">Submit</button>
       </form>
+
+      {/* ======================================================================== */}
+      {/* Popup for task details */}
+
+      {isPopupVisible && (
+        <PopupWrapper onClose={() => setPopupVisible(false)}>
+          <h3>Task Details</h3>
+          <p><strong>Task:</strong> {selectedEmployee.task}</p>
+          <p><strong>Start Time:</strong> {selectedEmployee.startTime}</p>
+          <p><strong>End Time:</strong> {selectedEmployee.endTime}</p>
+          <button onClick={() => setPopupVisible(false)}>Close</button>
+        </PopupWrapper>
+      )}
     </div>
   );
 };
+
+{/* ======================================================================== */ }
 
 export default Employees;
