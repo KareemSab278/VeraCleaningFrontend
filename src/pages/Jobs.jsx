@@ -14,12 +14,12 @@ export const Jobs = () => {
   const location = useLocation();
   const manager = location.state?.manager;
   const [jobName, setJobName] = useState("");
-  const [employeeName, setEmployeeName] = useState("");
+  // const [employeeName, setEmployeeName] = useState("");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
-  const [employeeTask, setEmployeeTask] = useState("");
+  // const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
+  // const [employeeTask, setEmployeeTask] = useState("");
   const [showEmployeesPopup, setShowEmployeesPopup] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -77,58 +77,7 @@ export const Jobs = () => {
   //================================================================================
   // Handle assigning an employee to a job
 
-  const handleAssignEmployee = async (e) => {
-    e.preventDefault();
-
-    // Check if jobName is set
-    if (!jobName) {
-      setError("No job selected. Please select a job first.");
-      return;
-    }
-
-    // Validate employee name and task
-    if (!employeeName.trim() || !employeeTask.trim()) {
-      setError("Employee name and task cannot be empty.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Find the job by jobName
-      const job = jobs.find((j) => j.jobName === jobName);
-      if (!job) {
-        setError("Job not found.");
-        return;
-      }
-
-      const response = await fetch(`/jobs/${job._id}/assign`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          employeeName,
-          employeeTask,
-        }),
-      });
-
-      if (response.ok) {
-        const updatedJob = await response.json();
-        setJobs((prevJobs) =>
-          prevJobs.map((j) => (j._id === job._id ? updatedJob : j))
-        );
-        setEmployeeName("");
-        setEmployeeTask("");
-      } else {
-        setError("Failed to assign employee.");
-      }
-    } catch (error) {
-      console.error("Error assigning employee:", error);
-      setError("Failed to assign employee. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   //================================================================================
   // Open the employees popup for a specific job
@@ -178,9 +127,9 @@ export const Jobs = () => {
             <li key={task.taskId}>
               <strong>Task:</strong> {task.taskName} <br />
               <strong>Status:</strong> {task.status} <br />
-              <strong>Start:</strong> {new Date(task.startTime).toLocaleString()} <br />
-              <strong>End:</strong>{" "}
-              {task.endTime ? new Date(task.endTime).toLocaleString() : "N/A"}
+              {/* <strong>Start:</strong> {new Date(task.startTime).toLocaleString()} <br />
+              <strong>End:</strong>{" "} */}
+              {/* {task.endTime ? new Date(task.endTime).toLocaleString() : "N/A"} */}
             </li>
           ))}
         </ul>
@@ -201,7 +150,7 @@ export const Jobs = () => {
           Signed in as: <strong>{manager.fullName}</strong>
         </p>
       )}
-      <p>This section is for creating a new job</p>
+      <p>This button is for creating a new job</p>
 
       {/* ======================================================================== */}
       {/* Create New Job Section */}
@@ -275,30 +224,7 @@ export const Jobs = () => {
               <br />
             </PopupWrapper>
 
-            {/* ======================================================================== */}
-            {/* Assign Employee and Task Button */}
-
-            {/* <PopupWrapper trigger={<button>Assign Employee and Task</button>}>
-              <h2>New Employee</h2>
-              <form onSubmit={handleAssignEmployee}>
-                <TextBox
-                  value={employeeName}
-                  onChange={(e) => setEmployeeName(e.target.value)}
-                  placeholder="Enter Employee FullName"
-                />
-                <br />
-                <br />
-                <TextBox
-                  value={employeeTask}
-                  onChange={(e) => setEmployeeTask(e.target.value)}
-                  placeholder="Enter Task (room)"
-                />
-                <br />
-                <br />
-                <button type="submit">Submit</button>
-              </form>
-            </PopupWrapper> */}
-
+            
             {/* ======================================================================== */}
             {/* Terminate Job Button */}
 

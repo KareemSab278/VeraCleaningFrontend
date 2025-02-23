@@ -10,6 +10,9 @@ const Employees = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(false);
+  
+  const [jobName, setJobName] = useState("");  
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -32,6 +35,114 @@ const Employees = () => {
     }
     fetchJobs();
   }, []);
+
+  // const handleAssignEmployee = async (e) => {
+  //     e.preventDefault();
+  
+  //     // Check if jobName is set
+  //     if (!jobName) {
+  //       setError("No job selected. Please select a job first.");
+  //       return;
+  //     }
+  
+  //     // Validate employee name and task
+  //     if (!employeeName.trim() || !employeeTask.trim()) {
+  //       setError("Employee name and task cannot be empty.");
+  //       return;
+  //     }
+  
+  //     setLoading(true);
+  //     setError(null);
+  
+  //     try {
+  //       // Find the job by jobName
+  //       const job = jobs.find((j) => j.jobName === jobName);
+  //       if (!job) {
+  //         setError("Job not found.");
+  //         return;
+  //       }
+  
+  //       const response = await fetch(`/jobs/${job._id}/assign`, {
+  //         method: "PATCH",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           employeeName,
+  //           employeeTask,
+  //         }),
+  //       });
+  
+  //       if (response.ok) {
+  //         const updatedJob = await response.json();
+  //         setJobs((prevJobs) =>
+  //           prevJobs.map((j) => (j._id === job._id ? updatedJob : j))
+  //         );
+  //         setEmployeeName("");
+  //         setEmployeeTask("");
+  //       } else {
+  //         setError("Failed to assign employee.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error assigning employee:", error);
+  //       setError("Failed to assign employee. Please try again.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  const handleAssignEmployee = async (e) => {
+    e.preventDefault();
+  
+    if (!selectedJob) {
+      setError("No job selected. Please select a job first.");
+      return;
+    }
+  
+    if (!employeeName.trim() || !employeeTask.trim()) {
+      setError("Employee name and task cannot be empty.");
+      return;
+    }
+  
+    setLoading(true);
+    setError(null);
+  
+    try {
+      // Make the PATCH request to assign the employee
+      const response = await fetch(`http://localhost:3000/jobs/${selectedJob._id}/assign`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          employeeName,
+          employeeTask,
+        }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to assign employee.");
+  
+      // After successful assignment, fetch the updated jobs and employees
+      const updatedJob = await response.json();
+      setJobs((prevJobs) =>
+        prevJobs.map((j) => (j._id === selectedJob._id ? updatedJob : j))
+      );
+  
+      // Fetch the updated list of employees for the selected job
+      const updatedEmployees = await getJobEmployees(selectedJob._id);
+      setEmployees(updatedEmployees);
+  
+      // Reset form fields
+      setEmployeeName("");
+      setEmployeeTask("");
+      setSelectedEmployee(null);
+      alert("Employee assigned successfully!");
+    } catch (error) {
+      console.error("Error assigning employee:", error);
+      setError("Failed to assign employee. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+  
 
   // Fetch employees when a job is selected
   useEffect(() => {
@@ -87,8 +198,9 @@ const Employees = () => {
 
       <form onSubmit={handleSubmit}>
         <h3>Select Employee</h3>
-        <Dropdown
-          options={employees.map(emp => ({
+        <Dropdown 
+        
+          options={ employees.map(emp => ({
             value: emp.employeeId,
             label: emp.fullName,
             ...emp
@@ -97,6 +209,30 @@ const Employees = () => {
           onSelectedChange={handleEmployeeSelect}
         />
         <br />
+
+        {/* ======================================================================== */}
+                    {/* Assign Employee and Task Button */}
+        
+                    <PopupWrapper trigger={<button>Assign Employee and Task</button>}>
+  <h2>New Employee</h2>
+  <form onSubmit={handleAssignEmployee}>
+    <TextBox
+      value={employeeName}
+      onChange={(e) => setEmployeeName(e.target.value)}
+      placeholder="Enter Employee FullName"
+    />
+    <br /><br />
+    <TextBox
+      value={employeeTask}
+      onChange={(e) => setEmployeeTask(e.target.value)}
+      placeholder="Enter Task (room)"
+    />
+    <br /><br />
+    <button type="submit">Submit</button>
+  </form>
+</PopupWrapper>
+
+        
 
         <h3>Task Details</h3>
         <TextBox
