@@ -25,6 +25,34 @@ export async function createJob(jobData) {
   }
 }
 
+//trying something new
+
+export async function createEmployee(jobData) {
+  try {
+    const res = await fetch(`${API_URL}/jobs/${jobData.jobId}/assign`, { // Use jobId if needed in the URL
+      method: 'PATCH', // Use PATCH for partial updates
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        employeeName: jobData.employeeName,
+        employeeTask: jobData.employeeTask
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error('Error adding employee to job');
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error('createEmployee error:', error);
+    throw error;
+  }
+}
+
+//======================================================
+
 // Function to get all jobs (GET /jobs)
 export async function getJobs() {
   try {
@@ -37,6 +65,12 @@ export async function getJobs() {
     console.error('getJobs error:', error);
     throw error;
   }
+}
+
+export async function getJobEmployees(jobId) {
+  const response = await fetch(`http://localhost:3000/jobs/${jobId}/employees`);
+  const data = await response.json();
+  return data;
 }
 
 // Function to create a new manager (POST /managers)

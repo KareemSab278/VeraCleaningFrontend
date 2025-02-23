@@ -19,9 +19,10 @@ export const Jobs = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(employeeOptions[0]);
-  const [employeeTask, setEmployeeTask] = useState('');
+  const [employeeTask, setEmployeeTask] = useState("");
   const [showEmployeesPopup, setShowEmployeesPopup] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+
   const handleEmployeeClick = () => {
     navigate("/employees");
   };
@@ -72,6 +73,63 @@ export const Jobs = () => {
       setLoading(false);
     }
   };
+
+  //================================================================================
+  // Handle assigning an employee to a job
+
+  const handleAssignEmployee = async (e) => {
+    e.preventDefault();
+
+    // Check if jobName is set
+    if (!jobName) {
+      setError("No job selected. Please select a job first.");
+      return;
+    }
+
+    // Validate employee name and task
+    if (!employeeName.trim() || !employeeTask.trim()) {
+      setError("Employee name and task cannot be empty.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Find the job by jobName
+      const job = jobs.find((j) => j.jobName === jobName);
+      if (!job) {
+        setError("Job not found.");
+        return;
+      }
+
+      const response = await fetch(`/jobs/${job._id}/assign`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          employeeName,
+          employeeTask,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedJob = await response.json();
+        setJobs((prevJobs) =>
+          prevJobs.map((j) => (j._id === job._id ? updatedJob : j))
+        );
+        setEmployeeName("");
+        setEmployeeTask("");
+      } else {
+        setError("Failed to assign employee.");
+      }
+    } catch (error) {
+      console.error("Error assigning employee:", error);
+      setError("Failed to assign employee. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   //================================================================================
   // Open the employees popup for a specific job
 
@@ -109,42 +167,10 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Render the list of employees for a given job
-
-  // const renderEmployees = (job) => {
-  //   if (job.employees && job.employees.length > 0) {
-  //     return (
-  //       <ul>
-  //         {job.employees.map((emp) => (
-  //           <li key={emp.employeeId}>
-  //             Employee: {emp.fullName}
-  //             {emp.tasks && emp.tasks.length > 0 && (
-  //               <ul>
-  //                 {emp.tasks.map((task) => (
-  //                   <li key={task.taskId}>
-  //                     Task: {task.taskName} (Status: {task.status}) <br />
-  //                     (Start: {new Date(task.startTime).toLocaleString()}, End:{" "}
-  //                     {task.endTime
-  //                       ? new Date(task.endTime).toLocaleString()
-  //                       : "N/A"})
-  //                   </li>
-  //                 ))}
-  //               </ul>
-  //             )}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     );
-  //   } else {
-  //     return <p>No employees assigned.</p>;
-  //   }
-  // };
-
-  //================================================================================
-  //Show all tasks for the jobs based on tempdata
+  // Show all tasks for the jobs based on tempdata
 
   const renderTasks = (job) => {
-    const allTasks = job.employees?.flatMap(emp => emp.tasks) || [];
+    const allTasks = job.employees?.flatMap((emp) => emp.tasks) || [];
     if (allTasks.length > 0) {
       return (
         <ul>
@@ -153,7 +179,8 @@ export const Jobs = () => {
               <strong>Task:</strong> {task.taskName} <br />
               <strong>Status:</strong> {task.status} <br />
               <strong>Start:</strong> {new Date(task.startTime).toLocaleString()} <br />
-              <strong>End:</strong> {task.endTime ? new Date(task.endTime).toLocaleString() : "N/A"}
+              <strong>End:</strong>{" "}
+              {task.endTime ? new Date(task.endTime).toLocaleString() : "N/A"}
             </li>
           ))}
         </ul>
@@ -162,6 +189,10 @@ export const Jobs = () => {
       return <p>No tasks found for this job.</p>;
     }
   };
+
+  //================================================================================
+  // Render the component
+
   return (
     <div>
       <h1>Jobs</h1>
@@ -197,7 +228,12 @@ export const Jobs = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       {jobs.length > 0 ? (
         jobs.map((job) => (
-          <PopupWrapper key={job._id} trigger={<button>{job.jobName}</button>}>
+          <PopupWrapper
+            key={job._id}
+            trigger={
+              <button onClick={() => setJobName(job.jobName)}>{job.jobName}</button>
+            }
+          >
             <h2>{job.jobName} Details</h2>
             <p>
               <strong>Created By:</strong> {job.createdBy}
@@ -211,44 +247,57 @@ export const Jobs = () => {
             {/* ======================================================================== */}
             {/* View Employees Button */}
 
-            <PopupWrapper trigger={<button
-              style={{ marginRight: "30px", backgroundColor: "blue" }}
-            >View Employees
-            </button>}>
-              <h2>{jobName} Employees</h2>
-              <form onSubmit={(e) => e.preventDefault()}> {/* Prevent default form submission */}
+            <PopupWrapper
+              trigger={
+                <button
+                  style={{ marginRight: "30px", backgroundColor: "blue" }}
+                >
+                  View Employees
+                </button>
+              }
+            >
+              <h2>{job.jobName} Employees</h2>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <strong>
                   {employeeNames.map((emp, index) => (
                     <React.Fragment key={index}>
                       {emp.label}
-                      <br /><br />
+                      <br />
+                      tasks:
+                      <br />
+                      <br />
                     </React.Fragment>
                   ))}
-                </strong><br />
-
-                {/* ======================================================================== */}
-                {/* <p>Employee Selected: {selectedEmployee.label}</p> */}
-
+                </strong>
+                <br />
               </form>
-              <button onClick={handleEmployeeClick}>Go To Employees Page</button><br />
+              <button onClick={handleEmployeeClick}>Go To Employees Page</button>
+              <br />
             </PopupWrapper>
-            <PopupWrapper trigger={<button>Assign Employee and Task</button>}>
+
+            {/* ======================================================================== */}
+            {/* Assign Employee and Task Button */}
+
+            {/* <PopupWrapper trigger={<button>Assign Employee and Task</button>}>
               <h2>New Employee</h2>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleAssignEmployee}>
                 <TextBox
                   value={employeeName}
                   onChange={(e) => setEmployeeName(e.target.value)}
                   placeholder="Enter Employee FullName"
-                /><br /><br />
+                />
+                <br />
+                <br />
                 <TextBox
                   value={employeeTask}
                   onChange={(e) => setEmployeeTask(e.target.value)}
                   placeholder="Enter Task (room)"
-                /> <br /><br />
+                />
+                <br />
+                <br />
                 <button type="submit">Submit</button>
               </form>
-            </PopupWrapper>
-            <br />
+            </PopupWrapper> */}
 
             {/* ======================================================================== */}
             {/* Terminate Job Button */}
@@ -264,10 +313,11 @@ export const Jobs = () => {
       ) : (
         <p>No current jobs found.</p>
       )}
+
       {/* Employees Popup */}
       {renderEmployeesPopup()}
     </div>
   );
 };
-{/* ======================================================================== */ }
+
 export default Jobs;
