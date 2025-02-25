@@ -75,11 +75,6 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Handle assigning an employee to a job
-
-  
-
-  //================================================================================
   // Open the employees popup for a specific job
 
   const handleViewEmployees = (job) => {

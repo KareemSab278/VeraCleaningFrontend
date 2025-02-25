@@ -1,0 +1,80 @@
+/* Dropdown.css */
+.dropdown-container {
+    display: flex;
+    justify-content: center;
+    width: auto;
+  }
+/* Container for dropdown */
+.ui.form {
+    max-width: 300px;
+    margin-bottom: 20px;
+    padding: auto;
+    
+  }
+  
+  /* Style for dropdown field */
+  .field {
+    position: relative;
+  }
+  
+  /* Base dropdown styling */
+  /* .ui.selection.dropdown {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #00000052;
+    cursor: pointer;
+  } */
+  
+  /* Dropdown icon */
+  .dropdown.icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  /* Menu containing options */
+  .menu {
+    max-height: 200px;
+    overflow-y: auto;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    background-color: #ffffff52;
+    margin-top: 5px;
+    padding: 20px;
+}
+  
+  /* Individual option item */
+  .item {
+    padding: 5px;
+  }
+  
+  /* Button inside each item */
+  .dropdown-button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease; /* Smooth transition */
+  }
+  
+  /* Hover effect */
+  .dropdown-button:hover {
+    background-color: #0288d1; /* Blue on hover */
+    color: white; /* White text on hover */
+  }
+  
+  /* Selected state */
+  .dropdown-button.selected {
+    background-color: #e0f7fa; /* Light cyan when selected */
+    color: #00acc1; /* Cyan text */
+    font-weight: bold; /* Bold for emphasis */
+  }
+  
+  /* Ensure selected state overrides hover */
+  .dropdown-button.selected:hover {
+    background-color: #b2ebf2; /* Slightly darker cyan on hover when selected */
+  }

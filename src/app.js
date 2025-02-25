@@ -25,6 +25,7 @@ export async function createJob(jobData) {
   }
 }
 
+//======================================================
 //trying something new
 
 export async function createEmployee(jobData) {
@@ -73,6 +74,7 @@ export async function getJobEmployees(jobId) {
   return data;
 }
 
+//======================================================
 // Function to create a new manager (POST /managers)
 export async function createManager(managerData) {
   try {
@@ -93,6 +95,7 @@ export async function createManager(managerData) {
   }
 }
 
+//======================================================
 // Function to get all managers (GET /managers)
 export async function getManagers() {
   try {
@@ -107,6 +110,7 @@ export async function getManagers() {
   }
 }
 
+//======================================================
 // Function to sign in a manager with the provided credentials
 export async function signInManager(credentials) {
   try {
@@ -123,3 +127,5 @@ export async function signInManager(credentials) {
     throw error;
   }
 }
+
+//end
