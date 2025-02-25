@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.14.0",
+    "@cloudinary/url-gen": "^1.21.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "react": "^19.0.0",

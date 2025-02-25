@@ -4,6 +4,22 @@ export const buttonClickedExperiemnt = (x) => {
 };
 
 const API_URL = 'http://localhost:3000';
+export const IMAGE_API_KEY = '433386876646741';
+export const API_SECRET_KEY = '82Ke3ZTMUp6HfyCHdGt7gGM4ooQ';
+export const CLOUDINARY_URL= 'cloudinary://433386876646741:82Ke3ZTMUp6HfyCHdGt7gGM4ooQ@djlvcdcds';
+
+export default async function uploadImage (file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "ml_default");
+  
+  const response = await axios.post(
+    "https://api.cloudinary.com/v1_1/djlvcdcds/image/upload",
+    formData
+  );
+  
+  return response.data.secure_url;
+};
 
 // Function to create a new job (POST /jobs)
 export async function createJob(jobData) {
