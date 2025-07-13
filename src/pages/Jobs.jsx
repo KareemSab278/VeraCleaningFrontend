@@ -6,6 +6,7 @@ import { createJob, getJobs } from "../app";
 import Dropdown from "../components/Dropdown";
 import { employeeOptions } from "../tempData";
 import { employeeNames } from "../tempData";
+import '../css/Jobs.css'
 
 //================================================================================
 
@@ -28,7 +29,13 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Fetch jobs when the component mounts
+
+  useEffect(() => {
+      const manager = localStorage.getItem("manager");
+      if (!manager) {
+        navigate("/signin");
+      }
+    }, [navigate]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -48,7 +55,6 @@ export const Jobs = () => {
   }, []);
 
   //================================================================================
-  // Handle form submission to create a new job
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,7 +81,6 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Open the employees popup for a specific job
 
   const handleViewEmployees = (job) => {
     setSelectedJob(job);
@@ -83,22 +88,21 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Render the employees popup
 
   const renderEmployeesPopup = () => {
-    if (!selectedJob) return null; // Guard clause if no job is selected
+    if (!selectedJob) return null;
     return (
       <PopupWrapper
         isOpen={showEmployeesPopup}
         onClose={() => setShowEmployeesPopup(false)}
       >
         <h2>Employees for {selectedJob.jobName}</h2>
-        {selectedJob.employees && selectedJob.employees.length > 0 ? (
+        {selectedJob.employees && selectedJob.employees.length > 0 ? ( //eh?
           selectedJob.employees.map((employee) => (
             <button
               key={employee.employeeId}
               style={{ display: "block", margin: "10px 0" }}
-              onClick={() => handleEmployeeClick(employee)} // Navigate on employee click
+              onClick={() => handleEmployeeClick(employee)}
             >
               {employee.fullName}
             </button>
@@ -111,7 +115,6 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Show all tasks for the jobs based on tempdata
 
   const renderTasks = (job) => {
     const allTasks = job.employees?.flatMap((emp) => emp.tasks) || [];
@@ -135,7 +138,6 @@ export const Jobs = () => {
   };
 
   //================================================================================
-  // Render the component
 
   return (
     <div>
@@ -148,7 +150,6 @@ export const Jobs = () => {
       <p>This button is for creating a new job</p>
 
       {/* ======================================================================== */}
-      {/* Create New Job Section */}
 
       <PopupWrapper trigger={<button>Create New Job</button>}>
         <h2>New Job</h2>
@@ -165,7 +166,6 @@ export const Jobs = () => {
       <br />
 
       {/* ======================================================================== */}
-      {/* Display Existing Jobs */}
 
       <h3>View Details For Current Jobs</h3>
       {loading && <p>Loading...</p>}
@@ -189,7 +189,6 @@ export const Jobs = () => {
             {renderTasks(job)}
 
             {/* ======================================================================== */}
-            {/* View Employees Button */}
 
             <PopupWrapper
               trigger={
@@ -221,7 +220,6 @@ export const Jobs = () => {
 
             
             {/* ======================================================================== */}
-            {/* Terminate Job Button */}
 
             <button
               style={{ marginRight: "30px", backgroundColor: "red" }}
@@ -235,7 +233,6 @@ export const Jobs = () => {
         <p>No current jobs found.</p>
       )}
 
-      {/* Employees Popup */}
       {renderEmployeesPopup()}
     </div>
   );

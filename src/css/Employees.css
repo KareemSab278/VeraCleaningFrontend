@@ -1,0 +1,64 @@
+.employees-container {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 30px;
+  max-width: 800px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h1, h3 {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.dropdown-wrapper {
+  margin-bottom: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.input-field::placeholder {
+  color: #777;
+}
+
+.submit-button,
+.action-button {
+  padding: 10px 20px;
+  background-color: #00bcd4;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: bold;
+}
+
+.submit-button:hover,
+.action-button:hover {
+  background-color: #0097a7;
+}
+
+.submit-button.disabled,
+.submit-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+label {
+  font-weight: 500;
+}
+
+input[type="file"] {
+  margin-top: 8px;
+  color: #ccc;
+}

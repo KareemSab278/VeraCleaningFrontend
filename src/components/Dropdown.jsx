@@ -1,8 +1,6 @@
-//======== Imports
 import React from 'react';
 import '../css/Dropdown.css';
 
-//======== Component Definition
 const Dropdown = ({ options, selected, onSelectedChange }) => {
   const renderedOptions = options.map((option, index) => (
     <div 
@@ -18,9 +16,8 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
     </div>
   ));
 
-  //======== Render
   return (
-    <div className="dropdown-container"> {/* Added wrapper for centering */}
+    <div className="dropdown-container">
       <div className="ui form">
         <div className="field">
           <div className="ui selection dropdown visible active">
@@ -33,5 +30,4 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
   );
 };
 
-//======== Export
 export default Dropdown;

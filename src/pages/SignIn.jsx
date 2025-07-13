@@ -3,22 +3,22 @@ import { signInManager } from "../app";
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("test-user");
+  const [password, setPassword] = useState("password");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const manager = await signInManager({ username, password });
-      alert(`Welcome, ${manager.fullName}`);
-      // Navigate to Jobs page and pass the manager object
-      navigate("/jobs", { state: { manager } });
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  e.preventDefault();
+  try {
+    const manager = await signInManager({ username, password });
+    localStorage.setItem("manager", JSON.stringify(manager));
+    alert(`Welcome, ${manager.fullName}`);
+    navigate("/jobs");
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   return (
     <div className="signin">

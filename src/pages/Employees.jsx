@@ -1,11 +1,13 @@
 //======== Imports
-import React, { useState, useEffect } from 'react';
-import { getJobs, getJobEmployees } from '../app';
-import Dropdown from '../components/Dropdown';
-import TextBox from '../components/TextBox';
-import PopupWrapper from '../components/PopUp';
-import ImageUploadPopup from '../components/ImageUploadButton';
-import  uploadImage from '../app'; // credentials for the cloudinary api and the upload image function
+import React, { useState, useEffect } from "react";
+import { getJobs, getJobEmployees } from "../app";
+import Dropdown from "../components/Dropdown";
+import TextBox from "../components/TextBox";
+import PopupWrapper from "../components/PopUp";
+import ImageUploadPopup from "../components/ImageUploadButton";
+import uploadImage from "../app"; // credentials for the cloudinary api and the upload image function
+import "../css/Employees.css";
+import { useNavigate } from "react-router-dom";
 
 //================================================================================
 
@@ -21,23 +23,31 @@ const Employees = () => {
   const [employeeName, setEmployeeName] = useState("");
   const [error, setError] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const navigate = useNavigate();
 
-//================================================================================
+  //================================================================================
 
-useEffect(() => {
-  async function fetchJobs() {
-    try {
-      const data = await getJobs();
-      setJobs(data);
-      if (data.length > 0) {
-        setSelectedJob(data[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
+  useEffect(() => {
+    const manager = localStorage.getItem("manager");
+    if (!manager) {
+      navigate("/signin");
     }
-  }
-  fetchJobs();
-}, []);
+  }, [navigate]);
+
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const data = await getJobs();
+        setJobs(data);
+        if (data.length > 0) {
+          setSelectedJob(data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    }
+    fetchJobs();
+  }, []);
 
   //================================================================================
 
@@ -45,7 +55,7 @@ useEffect(() => {
     if (selectedJob) {
       async function fetchEmployees() {
         try {
-          const response = await getJobEmployees(selectedJob._id);//employees for each job
+          const response = await getJobEmployees(selectedJob._id); //employees for each job
           setEmployees(response);
         } catch (error) {
           console.error("Error fetching employees:", error);
@@ -75,7 +85,7 @@ useEffect(() => {
     }
   };
 
-  //================================================================================ 
+  //================================================================================
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -96,7 +106,7 @@ useEffect(() => {
       setLoading(false);
     }
   };
-  
+
   //================================================================================
 
   const handleAssignEmployee = async (e) => {
@@ -145,74 +155,73 @@ useEffect(() => {
     }
   };
 
-    //================================================================================ 
+  //================================================================================
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (!selectedJob) {
-        setError("No job selected. Please select a job first.");
-        return;
-      }
-      if (!selectedEmployee) {
-        setError("No employee selected. Please select an employee first.");
-        return;
-      }
-      if (!taskName.trim()) {
-        setError("Task name is required.");
-        return;
-      }
-      if (!taskImageUrl.trim()) {
-        setError("Image URL is required.");
-        return;
-      }
-      if (!startTime) {
-        setError("Start time is required.");
-        return;
-      }
-      if (!endTime) {
-        setError("End time is required.");
-        return;
-      }
-  
-      setLoading(true);
-      setError(null);
-  
-      try {
-        const taskData = {
-          fullName: selectedEmployee.fullName,
-          task: {
-            taskName: taskName,
-            imageUrl: taskImageUrl,
-            startTime: new Date(startTime),
-            endTime: new Date(endTime),
-            status: "pending",
-            taskId: Date.now(),
-          },
-          updateExisting: false,
-        };
-  
-        const response = await fetch(
-          `http://localhost:3000/jobs/${selectedJob._id}/assign`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(taskData),
-          }
-        );
-  
-        if (!response.ok) {
-          throw new Error("Failed to save task details.");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedJob) {
+      setError("No job selected. Please select a job first.");
+      return;
+    }
+    if (!selectedEmployee) {
+      setError("No employee selected. Please select an employee first.");
+      return;
+    }
+    if (!taskName.trim()) {
+      setError("Task name is required.");
+      return;
+    }
+    if (!taskImageUrl.trim()) {
+      setError("Image URL is required.");
+      return;
+    }
+    if (!startTime) {
+      setError("Start time is required.");
+      return;
+    }
+    if (!endTime) {
+      setError("End time is required.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const taskData = {
+        fullName: selectedEmployee.fullName,
+        task: {
+          taskName: taskName,
+          imageUrl: taskImageUrl,
+          startTime: new Date(startTime),
+          endTime: new Date(endTime),
+          status: "pending",
+          taskId: Date.now(),
+        },
+        updateExisting: false,
+      };
+
+      const response = await fetch(
+        `http://localhost:3000/jobs/${selectedJob._id}/assign`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(taskData),
         }
-  
-        const updatedJob = await response.json();
-        setJobs((prevJobs) =>
-          prevJobs.map((j) => (j._id === selectedJob._id ? updatedJob : j))
-        );
-        const updatedEmployees = await getJobEmployees(selectedJob._id);
-        setEmployees(updatedEmployees);
+      );
 
-  //================================================================================ 
-      // Reset Task Details form but keep employee selected
+      if (!response.ok) {
+        throw new Error("Failed to save task details.");
+      }
+
+      const updatedJob = await response.json();
+      setJobs((prevJobs) =>
+        prevJobs.map((j) => (j._id === selectedJob._id ? updatedJob : j))
+      );
+      const updatedEmployees = await getJobEmployees(selectedJob._id);
+      setEmployees(updatedEmployees);
+
+      //================================================================================
 
       setTaskName("");
       setTaskImageUrl("");
@@ -230,14 +239,14 @@ useEffect(() => {
 
   //================================================================================
 
-  const isTaskDetailsComplete = taskName.trim() && taskImageUrl.trim() && startTime && endTime;   //condition for checking if all fields are there
+  const isTaskDetailsComplete =
+    taskName.trim() && taskImageUrl.trim() && startTime && endTime; //condition for checking if all fields are there
 
   return (
     <div className="employees-container">
       <h1>Employee Page</h1>
 
-    {/* ============================================================================== */}
-      {/* Job Selection Section */}
+      {/* ============================================================================== */}
       <h3>Select Job</h3>
       {jobs.length > 0 ? (
         <div className="dropdown-wrapper">
@@ -259,21 +268,27 @@ useEffect(() => {
 
       <form onSubmit={handleSubmit}>
         <h3>Select Employee</h3>
-        <div className="dropdown-wrapper">
-          <Dropdown
-            options={employees.map((emp) => ({
-              value: emp._id,
-              label: emp.fullName,
-              ...emp,
-            }))}
-            selected={selectedEmployee}
-            onSelectedChange={handleEmployeeSelect}
-            className={selectedEmployee ? "dropdown-selected" : ""}
-          />
-        </div>
-        <br />
+        {employees.length > 0 ? (
+          <>
+            <div className="dropdown-wrapper">
+              <Dropdown
+                options={employees.map((emp) => ({
+                  value: emp._id,
+                  label: emp.fullName,
+                  ...emp,
+                }))}
+                selected={selectedEmployee}
+                onSelectedChange={handleEmployeeSelect}
+                className={selectedEmployee ? "dropdown-selected" : ""}
+              />
+            </div>
+            <br />
+          </>
+        ) : (
+          <p>No employees available</p>
+        )}
 
-    {/* ============================================================================== */}
+        {/* ============================================================================== */}
 
         <PopupWrapper
           trigger={<button className="action-button">Add Employee</button>}
@@ -308,7 +323,7 @@ useEffect(() => {
         <br />
         <TextBox
           value={taskImageUrl}
-          onChange={(e) => setTaskImageUrl(e.target.value)} // Allow manual entry if needed
+          onChange={(e) => setTaskImageUrl(e.target.value)}
           placeholder="Image URL"
           required
           className="input-field"
@@ -334,10 +349,11 @@ useEffect(() => {
           className="input-field"
         />
         <br />
-<br />
-        {/* Image Upload Section */}
+        <br />
         <div>
-          <label htmlFor="imageUpload"><h3>Upload Image:</h3></label>
+          <label htmlFor="imageUpload">
+            <h3>Upload Image:</h3>
+          </label>
           <input
             type="file"
             id="imageUpload"

@@ -10,7 +10,7 @@ const ImageUploadPopup = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result); // Set the uploaded image
+                setImage(reader.result); 
             };
             reader.readAsDataURL(file);
         }
@@ -18,7 +18,6 @@ const ImageUploadPopup = () => {
 
     return (
         <div>
-            {/* Button to open the popup */}
             <button onClick={() => setIsOpen(true)}>Upload Image</button>
 
             {/* Popup */}
