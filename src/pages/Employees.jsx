@@ -30,7 +30,7 @@ const Employees = () => {
   useEffect(() => {
     const manager = localStorage.getItem("manager");
     if (!manager) {
-      navigate("/signin");
+      navigate("/VeraCleaningFrontend/signout");
     }
   }, [navigate]);
 

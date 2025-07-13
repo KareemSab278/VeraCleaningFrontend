@@ -33,7 +33,7 @@ export const Jobs = () => {
   useEffect(() => {
       const manager = localStorage.getItem("manager");
       if (!manager) {
-        navigate("/signin");
+        navigate("/VeraCleaningFrontend/signin");
       }
     }, [navigate]);
 
