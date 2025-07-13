@@ -13,8 +13,8 @@ const SignIn = () => {
   try {
     const manager = await signInManager({ username, password });
     localStorage.setItem("manager", JSON.stringify(manager));
-    alert(`Welcome, ${manager.fullName}`);
-    navigate("/jobs");
+    // alert(`Welcome, ${manager.fullName}`);
+    navigate("/VeraCleaningFrontend/jobs");
   } catch (err) {
     setError(err.message);
   }

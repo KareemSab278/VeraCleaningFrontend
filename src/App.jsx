@@ -1,4 +1,14 @@
 import PrivateRoute from './components/PrivateRoute';
+import NavBar from './components/navBar';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import SignIn from './pages/SignIn';
+import Jobs from './pages/Jobs';
+import Employees from './pages/Employees';
+import './App.css';
+
+
+
 
 function App() {
   return (
