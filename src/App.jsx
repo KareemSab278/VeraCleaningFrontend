@@ -11,10 +11,12 @@ function App() {
     <>
     <NavBar />
       <Routes>
-        <Route path = "/" element = {<Home/>}/>
-        <Route path = "/signin" element = {<SignIn/>}/>
-        <Route path = "/jobs" element = {<Jobs/>}/>
-        <Route path = "/employees" element = {<Employees/>}/>
+        <Route path = "/VeraCleaningFrontend/" element = {<Home/>}/>
+        <Route path = "/VeraCleaningFrontend/signin" element = {<SignIn/>}/>
+        <Route path = "/VeraCleaningFrontend/jobs" element = {<Jobs/>}/>
+        <Route path = "/VeraCleaningFrontend/employees" element = {<Employees/>}/>
+        <Route path = "*" element = {<Home/>}/>
+        <Route path = "/VeraCleaningFrontend/signout" element = {<SignIn/>}/>
         </Routes>
     </>
   )

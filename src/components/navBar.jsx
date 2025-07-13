@@ -11,11 +11,11 @@ export default function NavBar() {
 
   return (
     <nav className="navbar">
-      <Link to="/">Home</Link>
-      <Link to="/SignIn">Sign In</Link>
-      <Link to="/Jobs">Jobs</Link>
-      <Link to="/employees">Employees</Link>
-      <a href="/SignIn" onClick={handleSignOut} className="signout-link">Sign Out</a>
+      <Link to="/VeraCleaningFrontend/">Home</Link>
+      <Link to="/VeraCleaningFrontend/SignIn">Sign In</Link>
+      <Link to="/VeraCleaningFrontend/Jobs">Jobs</Link>
+      <Link to="/VeraCleaningFrontend/employees">Employees</Link>
+      <Link to="/VeraCleaningFrontend/signout">Sign Out</Link>
     </nav>
   );
 }
