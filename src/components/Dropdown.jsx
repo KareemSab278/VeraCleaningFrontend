@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/Dropdown.css';
+import '../css/dropdown.css';
 
 const Dropdown = ({ options, selected, onSelectedChange }) => {
   const renderedOptions = options.map((option, index) => (
